@@ -4,13 +4,15 @@ import java.util.List;
 
 import com.onecontroller.ecommerce.dto.ProductDto;
 import com.onecontroller.ecommerce.model.Product;
+import com.onecontroller.ecommerce.request.AddProductRequest;
+import com.onecontroller.ecommerce.request.ProductUpdateRequest;
 
 public interface IProductService {
-    Product addProduct(Product product);
+    Product addProduct(AddProductRequest product);
 
     Product getProduct(String productId);
 
-    void updateProduct(Product product, String productId);
+    Product updateProduct(ProductUpdateRequest product);
     void deleteProduct(String id);
 
     List<Product> getAllProducts();

@@ -1,22 +1,46 @@
 package com.onecontroller.ecommerce.service.product;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.onecontroller.ecommerce.dto.ProductDto;
 import com.onecontroller.ecommerce.exceptions.ProductNotFoundException;
+import com.onecontroller.ecommerce.model.Category;
 import com.onecontroller.ecommerce.model.Product;
+import com.onecontroller.ecommerce.repository.CategoryRepository;
 import com.onecontroller.ecommerce.repository.ProductRepository;
+import com.onecontroller.ecommerce.request.AddProductRequest;
+import com.onecontroller.ecommerce.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 class  ProductService implements IProductService {
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
-    public Product addProduct(Product product) {
-        return null;
+    public Product addProduct(AddProductRequest request) {
+        Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
+                .orElseGet(()-> {
+                    Category newCategory = new Category();
+                    return categoryRepository.save(newCategory);
+                });
+       request.setCategory(category);
+
+        return productRepository.save(createProduct(request, category));
+    }
+    private Product createProduct(AddProductRequest request, Category category){
+        return new Product(
+                request.getName(),
+                request.getBrand(),
+                request.getPrice(),
+                request.getInventory(),
+                request.getDescription(),
+                category
+        );
     }
 
     @Override
@@ -26,8 +50,23 @@ class  ProductService implements IProductService {
     }
 
     @Override
-    public void updateProduct(Product product, String productId) {
+    public Product updateProduct(ProductUpdateRequest request) {
+        return productRepository.findById(request.getId())
+                .map(existingProduct -> updateExistingProduct(request, existingProduct))
+                .map(productRepository::save)
+                .orElseThrow(()-> new ProductNotFoundException(("Product Not Found!")));
+    }
+    private Product updateExistingProduct(ProductUpdateRequest request, Product existingProduct){
+        existingProduct.setName(request.getName());
+        existingProduct.setBrand(request.getBrand());
+        existingProduct.setPrice(request.getPrice());
+        existingProduct.setInventory(request.getInventory());
+        existingProduct.setDescription(request.getDescription());
 
+        Category category = categoryRepository.findByName(request.getCategory().getName());
+        existingProduct.setCategory(category);
+
+        return existingProduct;
     }
 
     @Override
@@ -76,6 +115,6 @@ class  ProductService implements IProductService {
 
     @Override
     public ProductDto convertToDto(Product product) {
-        return null;
+        ProductDto productdto = modelMapper()
     }
 }
