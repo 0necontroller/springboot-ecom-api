@@ -1,6 +1,8 @@
 package com.onecontroller.ecommerce.service.product;
 
 import java.util.List;
+
+import com.onecontroller.ecommerce.dto.ProductDto;
 import com.onecontroller.ecommerce.model.Product;
 
 public interface IProductService {
@@ -19,4 +21,5 @@ public interface IProductService {
     List<Product> getProductByBrandAndName(String brandName, String productName);
 
     Long countProductsByBrandAndName(String brandName, String productName);
+    ProductDto convertToDto(Product product);
 }
