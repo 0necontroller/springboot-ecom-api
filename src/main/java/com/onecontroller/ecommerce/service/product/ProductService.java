@@ -3,11 +3,14 @@ package com.onecontroller.ecommerce.service.product;
 import java.util.List;
 import java.util.Optional;
 
+import com.onecontroller.ecommerce.dto.ImageDto;
 import com.onecontroller.ecommerce.dto.ProductDto;
 import com.onecontroller.ecommerce.exceptions.ProductNotFoundException;
 import com.onecontroller.ecommerce.model.Category;
+import com.onecontroller.ecommerce.model.Image;
 import com.onecontroller.ecommerce.model.Product;
 import com.onecontroller.ecommerce.repository.CategoryRepository;
+import com.onecontroller.ecommerce.repository.ImageRepository;
 import com.onecontroller.ecommerce.repository.ProductRepository;
 import com.onecontroller.ecommerce.request.AddProductRequest;
 import com.onecontroller.ecommerce.request.ProductUpdateRequest;
@@ -20,6 +23,8 @@ import org.springframework.stereotype.Service;
 class  ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
+    private final ImageRepository imageRepository;
 
     @Override
     public Product addProduct(AddProductRequest request) {
@@ -115,6 +120,15 @@ class  ProductService implements IProductService {
 
     @Override
     public ProductDto convertToDto(Product product) {
-        ProductDto productdto = modelMapper()
+        ProductDto productDto = modelMapper.map(product, ProductDto.class);
+
+        List<ImageDto> productImagesDto = imageRepository.findByProductId(product.getId())
+                .stream()
+                .map(image-> modelMapper.map(image, ImageDto.class))
+                .toList();
+
+        productDto.setImages(productImagesDto);
+
+        return productDto;
     }
 }
