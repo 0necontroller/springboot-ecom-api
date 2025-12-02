@@ -3,20 +3,19 @@ package com.onecontroller.ecommerce.service.product;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import com.onecontroller.ecommerce.dto.ImageDto;
 import com.onecontroller.ecommerce.dto.ProductDto;
-import com.onecontroller.ecommerce.exceptions.ProductNotFoundException;
 import com.onecontroller.ecommerce.model.Category;
-import com.onecontroller.ecommerce.model.Image;
 import com.onecontroller.ecommerce.model.Product;
-import com.onecontroller.ecommerce.repository.CategoryRepository;
 import com.onecontroller.ecommerce.repository.ImageRepository;
 import com.onecontroller.ecommerce.repository.ProductRepository;
+import com.onecontroller.ecommerce.repository.CategoryRepository;
 import com.onecontroller.ecommerce.request.AddProductRequest;
 import com.onecontroller.ecommerce.request.ProductUpdateRequest;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Service;
+import com.onecontroller.ecommerce.exceptions.ProductNotFoundException;
 
 @Service
 @RequiredArgsConstructor
